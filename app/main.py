@@ -33,8 +33,7 @@ app = FastAPI(
     title='RestaurantApp',
     description='This API helps you to interact with some awesome restaurant',
     version="0.0.1",
-    openapi_tags=openapi_tags,
-    debug=True)
+    openapi_tags=openapi_tags)
 
 
 @app.get('/api/v1/menus', tags=["menus"])
