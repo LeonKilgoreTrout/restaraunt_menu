@@ -50,3 +50,7 @@ uvicorn main:app --reload
 ### Two more things to save your time: logs directory & postman results
 
 ![alt text](https://github.com/LeonKilgoreTrout/restaraunt_menu/blob/main/postman_results.png)
+
+### Feedback
+There is one mistake in postman tests: Проверка кол-ва блюд и подменю в меню -> Просматривает список блюд
+It returns empty list, but supposed to throw 404, because such target_menu_id doesn't exist.
