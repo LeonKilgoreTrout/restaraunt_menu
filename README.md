@@ -1,7 +1,7 @@
 # RestaurantApp
 
 ### 10 steps to become awesome
-1) Go to the root directory for this project
+1) Clone, then go to the root directory of this project
 2) Create and activate your own virtual environment
 3) Run:
 ```
