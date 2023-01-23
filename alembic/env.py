@@ -1,21 +1,23 @@
 from logging.config import fileConfig
-from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-import os
 # TODO: change relativity of packages
-from models import Base
-from models import Menu, Submenu, Dish
-from alembic import context
+from app.backend.models import Base
 
+from alembic import context
+from app.configs.configs import get_pg_settings
+
+
+Settings = get_pg_settings()
 
 config = context.config
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
 target_metadata = Base.metadata
 
-load_dotenv()
-config.set_main_option('sqlalchemy.url', os.getenv('DATABASE_URL'))
+config.set_main_option('sqlalchemy.url', Settings.DATABASE_URL)
 
 
 def run_migrations_offline() -> None:

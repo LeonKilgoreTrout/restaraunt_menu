@@ -1,14 +1,10 @@
 import sqlalchemy
 from sqlalchemy.ext import declarative
 from sqlalchemy import orm
-from dotenv import load_dotenv
-import os
+from app.configs.configs import get_pg_settings
 
+Settings = get_pg_settings()
 
-load_dotenv()
-
-DATABASE_URL = os.getenv('DATABASE_URL')
-
-engine = sqlalchemy.create_engine(DATABASE_URL)
+engine = sqlalchemy.create_engine(Settings.DATABASE_URL)
 SessionLocal = orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative.declarative_base()

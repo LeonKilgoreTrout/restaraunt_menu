@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from logging.config import dictConfig
+import logging
 
 
 class LogConfig(BaseModel):
@@ -9,6 +11,7 @@ class LogConfig(BaseModel):
     LOG_FILE_FORMAT: str = " %(asctime)s | %(message)s"
     LOG_LEVEL: str = "DEBUG"
     LOG_PATH: str = "../logs.log"
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     version = 1
     disable_existing_loggers = False
@@ -16,12 +19,12 @@ class LogConfig(BaseModel):
         "stdout": {
             "()": "uvicorn.logging.DefaultFormatter",
             "fmt": LOG_STDOUT_FORMAT,
-            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "datefmt": DATE_FORMAT,
         },
         "file": {
             "()": "uvicorn.logging.DefaultFormatter",
             "fmt": LOG_FILE_FORMAT,
-            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "datefmt": DATE_FORMAT,
         },
     }
     handlers = {
@@ -42,3 +45,7 @@ class LogConfig(BaseModel):
     loggers = {
         LOGGER_NAME: {"handlers": ["file", "stdout"], "level": LOG_LEVEL},
     }
+
+
+dictConfig(LogConfig().dict())
+Logger = logging.getLogger('restaurant')

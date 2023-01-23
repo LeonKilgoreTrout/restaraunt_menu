@@ -1,8 +1,9 @@
-import sqlalchemy
 from sqlalchemy.orm import relationship
-from database import Base
 from sqlalchemy.dialects.postgresql import UUID
+import sqlalchemy
 import uuid
+
+from app.backend.database import Base
 
 
 class Menu(Base):

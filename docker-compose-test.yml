@@ -1,0 +1,43 @@
+version: "3.8"
+
+networks:
+  restaurant_test:
+      external: true
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15.1-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=${PGDATA}
+    ports:
+      - "5432:5432"
+    networks:
+      - restaurant_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+  app_tests:
+    platform: linux/amd64
+    container_name: app_tests
+    networks:
+      - restaurant_test
+    build:
+      context: .
+      dockerfile: app_tests/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres

@@ -1,9 +1,10 @@
-from database import Base, SessionLocal, engine
-from models import Menu, Submenu, Dish
-from schemas import *
 from sqlalchemy.orm import Session
 from uuid import UUID
 from fastapi import HTTPException
+
+from app.backend.database import Base, SessionLocal, engine
+from app.backend.models import Menu, Submenu, Dish
+from app.backend.schemas import *
 
 
 __all__ = ['get_db', 'get_menu_by_id', 'add_new_menu', 'update_menu_by_id', 'delete_menu_by_id', 'get_all_menus',

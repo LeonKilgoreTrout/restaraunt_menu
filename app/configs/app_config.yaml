@@ -1,0 +1,4 @@
+title: RestaurantApp
+description: This API helps you to interact with some awesome restaurant
+version: 0.1
+debug: true

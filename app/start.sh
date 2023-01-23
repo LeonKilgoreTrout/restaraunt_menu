@@ -1,0 +1,6 @@
+#!/bin/bash
+rm requirements.txt
+echo Apllying alembic migration...
+alembic upgrade head
+echo Starting uvicorn server...
+python -m uvicorn app.backend.main:app --host 0.0.0.0 --reload

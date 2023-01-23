@@ -1,12 +1,20 @@
+### Current project able to work locally and in Docker container, but testing part works only locally. I'm going to fix it asap.
+
 # RestaurantApp
 
-### 10 steps to become awesome
+## Local case
 1) Clone, then go to the root directory of this project
+
 2) Create and activate your own virtual environment
+```commandline
+python -m venv create venv
+
+```
 3) Run:
 ```
 pip install -r requirements.txt 
 ```
+
 4) I kept my alembic files in case you won't spend your time for running the app :)
 Otherwise, I recommend to drop alembic directory and alembic.ini file and run:
 
@@ -27,10 +35,6 @@ alembic init alembic
 
 * config.set_main_option('sqlalchemy.url', os.getenv('DATABASE_URL'))
 
-and set such thing in alembic.ini file
-
-* prepend_sys_path = ./app
-
 6) Change .env file with respect to your local postgres
 7) Run:
 ```
@@ -45,13 +49,27 @@ cd app
 ```commandline
 uvicorn main:app --reload
 ```
-10) You're awesome!
+10) To run tests please use
+```commandline
+pytest -v 
+```
+from root directory
 
-### Two more things to save your time: logs directory & postman results
+## Docker case
 
-![alt text](https://github.com/LeonKilgoreTrout/restaraunt_menu/blob/main/postman_results.png)
+1) create networks:
+``` 
+docker network create restaurant
+docker network create restaurant_test
+```
+2) run 
+```commandline
+docker-compose up
+```
+to get project and postgres in containers
 
-### Feedback
-There is one mistake in postman tests: Проверка кол-ва блюд и подменю в меню -> Просматривает список блюд
-
-It returns empty list, but supposed to throw 404, because such target_menu_id doesn't exist.
+3) run (currently I have problems with the sane postgres as perfectly works in app)
+```commandline
+docker-compose up -f docker-compose-test.yml
+```
+to run tests 

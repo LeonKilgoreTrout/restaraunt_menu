@@ -1,17 +1,15 @@
 from fastapi import FastAPI, Depends
-from schemas import *
-from services import *
 from sqlalchemy.orm import Session
 from uuid import UUID
-from logging.config import dictConfig
-import logging
-from configs import LogConfig
 from typing import List
 
+from app.configs.logger import Logger
+from app.configs.configs import get_app_settings
+from app.backend.schemas import *
+from app.backend.services import *
 
-dictConfig(LogConfig().dict())
-logger = logging.getLogger('restaurant')
 
+Settings = get_app_settings()
 
 openapi_tags = [
     {
@@ -28,12 +26,13 @@ openapi_tags = [
     },
 ]
 
-
 app = FastAPI(
-    title='RestaurantApp',
-    description='This API helps you to interact with some awesome restaurant',
-    version="0.0.1",
-    openapi_tags=openapi_tags)
+    title=Settings.title,
+    description=Settings.description,
+    version=Settings.version,
+    debug=Settings.debug,
+    openapi_tags=openapi_tags
+)
 
 
 @app.get('/api/v1/menus', tags=["menus"])
@@ -41,10 +40,10 @@ async def get_menus(
         db: Session = Depends(get_db)
 ) -> List[MenuOut]:
     menus = await get_all_menus(db=db)
-    logger.disabled = True
+    Logger.disabled = True
     menus = [await get_menu(api_test_menu_id=menu.id, db=db) for menu in menus]
-    logger.disabled = False
-    logger.debug(f'GET | All menus viewed')
+    Logger.disabled = False
+    Logger.debug(f'GET | All menus viewed')
     return menus
 
 
@@ -63,7 +62,7 @@ async def get_menu(
     model = MenuOut.from_orm(model)
     model.submenus_count = nof_submenus
     model.dishes_count = nof_dishes
-    logger.debug(f'GET | {model.__class__.__name__}: {model}')
+    Logger.debug(f'GET | {model.__class__.__name__}: {model}')
 
     return model
 
@@ -76,7 +75,7 @@ async def add_menu(
 
     model = await add_new_menu(menu=menu, db=db)
     model = MenuOut.from_orm(model)
-    logger.debug(f'POST | {model.__class__.__name__}:{model}')
+    Logger.debug(f'POST | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -89,7 +88,7 @@ async def update_menu(
 
     model = await update_menu_by_id(id=api_test_menu_id, menu=menu, db=db)
     model = MenuOut.from_orm(model)
-    logger.debug(f'PATCH | {model.__class__.__name__}:{model}')
+    Logger.debug(f'PATCH | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -100,7 +99,7 @@ async def delete_menu(
 ) -> None:
 
     await delete_menu_by_id(id=api_test_menu_id, db=db)
-    logger.debug(f'DELETE | Menu {api_test_menu_id} has successfully deleted')
+    Logger.debug(f'DELETE | Menu {api_test_menu_id} has successfully deleted')
 
 
 @app.get('/api/v1/menus/{target_menu_id}/submenus', tags=["submenus"])
@@ -110,12 +109,12 @@ async def get_submenus(
 ) -> List[SubmenuOut]:
 
     model = await get_submenus_by_menu_id(menu_id=target_menu_id, db=db)
-    logger.disabled = True
+    Logger.disabled = True
     models = [await get_submenu(target_menu_id=target_menu_id,
                                 target_submenu_id=submenu.id,
                                 db=db) for submenu in model]
-    logger.disabled = False
-    logger.debug(f'GET | {models}')
+    Logger.disabled = False
+    Logger.debug(f'GET | {models}')
 
     return models
 
@@ -130,7 +129,7 @@ async def get_submenu(
     nof_dishes = len(model.dishes)
     model = SubmenuOut.from_orm(model)
     model.dishes_count = nof_dishes
-    logger.debug(f'GET | {model.__class__.__name__}:{model}')
+    Logger.debug(f'GET | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -141,7 +140,8 @@ async def add_submenu(
     db: Session = Depends(get_db)
 ) -> SubmenuOut:
     model = await add_new_submenu(submenu=submenu, menu_id=target_menu_id, db=db)
-    logger.debug(f'POST | {model.__class__.__name__}:{model}')
+    model = SubmenuOut.from_orm(model)
+    Logger.debug(f'POST | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -154,7 +154,7 @@ async def update_submenu(
 ) -> SubmenuOut:
     model = await update_submenu_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, submenu=submenu, db=db)
     model = SubmenuOut.from_orm(model)
-    logger.debug(f'PATCH | {model.__class__.__name__}:{model}')
+    Logger.debug(f'PATCH | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -165,7 +165,7 @@ async def delete_submenu(
         db: Session = Depends(get_db)
 ) -> None:
     await delete_submenu_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
-    logger.debug(f'DELETE | Submenu {target_submenu_id} has successfully deleted from Menu {target_menu_id}')
+    Logger.debug(f'DELETE | Submenu {target_submenu_id} has successfully deleted from Menu {target_menu_id}')
 
 
 @app.post('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes', status_code=201, tags=["dishes"])
@@ -177,7 +177,7 @@ async def add_dish(
 ) -> DishOut:
     model = await add_new_dish(dish=dish, menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
     model = DishOut.from_orm(model)
-    logger.debug(f'POST | {model.__class__.__name__}:{model}')
+    Logger.debug(f'POST | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -188,13 +188,13 @@ async def get_dishes(
     db: Session = Depends(get_db)
 ) -> List[DishOut]:
     model = await get_dishes_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
-    logger.disabled = True
+    Logger.disabled = True
     models = [await get_dish_by_ids(menu_id=target_menu_id,
                                     submenu_id=target_submenu_id,
                                     dish_id=dish.id,
                                     db=db) for dish in model]
-    logger.disabled = False
-    logger.debug(f'GET | {models}')
+    Logger.disabled = False
+    Logger.debug(f'GET | {models}')
     return models
 
 
@@ -210,7 +210,7 @@ async def get_dish(
                                   dish_id=api_test_dish_id,
                                   db=db)
     model = DishOut.from_orm(model)
-    logger.debug(f'GET | {model.__class__.__name__}:{model}')
+    Logger.debug(f'GET | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -228,7 +228,7 @@ async def update_dish(
                                      dish=dish,
                                      db=db)
     model = DishOut.from_orm(model)
-    logger.debug(f'PATCH | {model.__class__.__name__}:{model}')
+    Logger.debug(f'PATCH | {model.__class__.__name__}:{model}')
     return model
 
 
@@ -240,4 +240,4 @@ async def delete_submenu(
         db: Session = Depends(get_db)
 ) -> None:
     await delete_dish_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, dish_id=api_test_dish_id, db=db)
-    logger.debug(f'DELETE | Dish {target_submenu_id} has successfully deleted from Submenu {target_submenu_id}')
+    Logger.debug(f'DELETE | Dish {target_submenu_id} has successfully deleted from Submenu {target_submenu_id}')
