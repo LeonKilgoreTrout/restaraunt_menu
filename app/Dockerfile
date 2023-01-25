@@ -6,9 +6,7 @@ COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
     pip install -r requirements.txt
 COPY ./app ./app
-ADD ../alembic ./alembic
-ADD ../alembic.ini .
-ADD ../.env .
+ADD ./alembic ./alembic
+ADD ./alembic.ini .
+ADD ./.env .
 EXPOSE 8080
-RUN /bin/bash -c 'chmod 777 -R /app'
-CMD ["/bin/bash", "-c", "./app/start.sh"]
