@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from uuid import UUID
 from typing import List
 
 from app.configs.logger import Logger
@@ -49,7 +48,7 @@ async def get_menus(
 
 @app.get('/api/v1/menus/{api_test_menu_id}', tags=["menus"])
 async def get_menu(
-        api_test_menu_id: UUID,
+        api_test_menu_id: str,
         db: Session = Depends(get_db),
 ) -> MenuOut:
 
@@ -81,7 +80,7 @@ async def add_menu(
 
 @app.patch('/api/v1/menus/{api_test_menu_id}', tags=["menus"])
 async def update_menu(
-        api_test_menu_id: UUID,
+        api_test_menu_id: str,
         menu: MenuIn,
         db: Session = Depends(get_db)
 ) -> MenuOut:
@@ -94,7 +93,7 @@ async def update_menu(
 
 @app.delete('/api/v1/menus/{api_test_menu_id}', tags=["menus"])
 async def delete_menu(
-        api_test_menu_id: UUID,
+        api_test_menu_id: str,
         db: Session = Depends(get_db)
 ) -> None:
 
@@ -104,7 +103,7 @@ async def delete_menu(
 
 @app.get('/api/v1/menus/{target_menu_id}/submenus', tags=["submenus"])
 async def get_submenus(
-        target_menu_id: UUID,
+        target_menu_id: str,
         db: Session = Depends(get_db)
 ) -> List[SubmenuOut]:
 
@@ -121,8 +120,8 @@ async def get_submenus(
 
 @app.get('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}', tags=["submenus"])
 async def get_submenu(
-        target_menu_id: UUID,
-        target_submenu_id: UUID,
+        target_menu_id: str,
+        target_submenu_id: str,
         db: Session = Depends(get_db)
 ) -> SubmenuOut:
     model = await get_submenu_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
@@ -136,7 +135,7 @@ async def get_submenu(
 @app.post('/api/v1/menus/{target_menu_id}/submenus', status_code=201, tags=["submenus"])
 async def add_submenu(
     submenu: SubmenuIn,
-    target_menu_id: UUID,
+    target_menu_id: str,
     db: Session = Depends(get_db)
 ) -> SubmenuOut:
     model = await add_new_submenu(submenu=submenu, menu_id=target_menu_id, db=db)
@@ -147,8 +146,8 @@ async def add_submenu(
 
 @app.patch('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}', response_model=SubmenuOut, tags=["submenus"])
 async def update_submenu(
-        target_menu_id: UUID,
-        target_submenu_id: UUID,
+        target_menu_id: str,
+        target_submenu_id: str,
         submenu: SubmenuIn,
         db: Session = Depends(get_db)
 ) -> SubmenuOut:
@@ -160,8 +159,8 @@ async def update_submenu(
 
 @app.delete('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}', tags=["submenus"])
 async def delete_submenu(
-        target_menu_id: UUID,
-        target_submenu_id: UUID,
+        target_menu_id: str,
+        target_submenu_id: str,
         db: Session = Depends(get_db)
 ) -> None:
     await delete_submenu_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
@@ -171,8 +170,8 @@ async def delete_submenu(
 @app.post('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes', status_code=201, tags=["dishes"])
 async def add_dish(
         dish: DishIn,
-        target_menu_id: UUID,
-        target_submenu_id: UUID,
+        target_menu_id: str,
+        target_submenu_id: str,
         db: Session = Depends(get_db)
 ) -> DishOut:
     model = await add_new_dish(dish=dish, menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
@@ -183,8 +182,8 @@ async def add_dish(
 
 @app.get('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes', tags=["dishes"])
 async def get_dishes(
-    target_menu_id: UUID,
-    target_submenu_id: UUID,
+    target_menu_id: str,
+    target_submenu_id: str,
     db: Session = Depends(get_db)
 ) -> List[DishOut]:
     model = await get_dishes_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, db=db)
@@ -200,9 +199,9 @@ async def get_dishes(
 
 @app.get('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes/{api_test_dish_id}', tags=["dishes"])
 async def get_dish(
-    target_menu_id: UUID,
-    target_submenu_id: UUID,
-    api_test_dish_id: UUID,
+    target_menu_id: str,
+    target_submenu_id: str,
+    api_test_dish_id: str,
     db: Session = Depends(get_db)
 ) -> DishOut:
     model = await get_dish_by_ids(menu_id=target_menu_id,
@@ -216,9 +215,9 @@ async def get_dish(
 
 @app.patch('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes/{api_test_dish_id}', tags=["dishes"])
 async def update_dish(
-        target_menu_id: UUID,
-        target_submenu_id: UUID,
-        api_test_dish_id: UUID,
+        target_menu_id: str,
+        target_submenu_id: str,
+        api_test_dish_id: str,
         dish: DishIn,
         db: Session = Depends(get_db)
 ) -> DishOut:
@@ -234,9 +233,9 @@ async def update_dish(
 
 @app.delete('/api/v1/menus/{target_menu_id}/submenus/{target_submenu_id}/dishes/{api_test_dish_id}', tags=["dishes"])
 async def delete_submenu(
-        target_menu_id: UUID,
-        target_submenu_id: UUID,
-        api_test_dish_id: UUID,
+        target_menu_id: str,
+        target_submenu_id: str,
+        api_test_dish_id: str,
         db: Session = Depends(get_db)
 ) -> None:
     await delete_dish_by_ids(menu_id=target_menu_id, submenu_id=target_submenu_id, dish_id=api_test_dish_id, db=db)

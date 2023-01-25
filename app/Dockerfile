@@ -6,8 +6,7 @@ COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
     pip install -r requirements.txt
 COPY ./app ./app
-ADD ../alembic ./alembic
-ADD ../alembic.ini .
-ADD ../.env .
-EXPOSE 8000
-CMD ["/bin/bash", "-c", "./app/start.sh"]
+ADD ./alembic ./alembic
+ADD ./alembic.ini .
+ADD ./.env .
+EXPOSE 8080

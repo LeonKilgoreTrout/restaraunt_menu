@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from uuid import UUID
 from fastapi import HTTPException
 
 from app.backend.database import Base, SessionLocal, engine
@@ -37,7 +36,7 @@ async def add_new_menu(
 
 
 async def get_menu_by_id(
-        id: UUID,
+        id: str,
         db: Session
 ):
     response = db.query(Menu).filter(Menu.id == id).first()
@@ -47,7 +46,7 @@ async def get_menu_by_id(
 
 
 async def update_menu_by_id(
-        id: UUID,
+        id: str,
         menu: MenuIn,
         db: Session
 ):
@@ -61,7 +60,7 @@ async def update_menu_by_id(
 
 
 async def delete_menu_by_id(
-        id: UUID,
+        id: str,
         db: Session
 ) -> None:
     # checks that such menu exist
@@ -78,7 +77,7 @@ async def get_all_menus(
 
 async def add_new_submenu(
         submenu: SubmenuIn,
-        menu_id: UUID,
+        menu_id: str,
         db: Session
 ):
     submenu = Submenu(**submenu.dict())
@@ -92,7 +91,7 @@ async def add_new_submenu(
 
 
 async def get_submenus_by_menu_id(
-        menu_id: UUID,
+        menu_id: str,
         db: Session
 ):
     # checks that such menu exist
@@ -102,8 +101,8 @@ async def get_submenus_by_menu_id(
 
 
 async def get_submenu_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
+        menu_id: str,
+        submenu_id: str,
         db: Session
 ):
     # checks that such menu exist
@@ -115,8 +114,8 @@ async def get_submenu_by_ids(
 
 
 async def update_submenu_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
+        menu_id: str,
+        submenu_id: str,
         submenu: SubmenuIn,
         db: Session
 ):
@@ -130,8 +129,8 @@ async def update_submenu_by_ids(
 
 
 async def delete_submenu_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
+        menu_id: str,
+        submenu_id: str,
         db: Session
 ):
     # checks that such submenu exist
@@ -142,8 +141,8 @@ async def delete_submenu_by_ids(
 
 async def add_new_dish(
         dish: DishIn,
-        menu_id: UUID,
-        submenu_id: UUID,
+        menu_id: str,
+        submenu_id: str,
         db: Session
 ):
     dish = Dish(**dish.dict())
@@ -161,8 +160,8 @@ async def add_new_dish(
 
 
 async def get_dishes_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
+        menu_id: str,
+        submenu_id: str,
         db: Session
 ):
     # checks that such menu exists
@@ -174,9 +173,9 @@ async def get_dishes_by_ids(
 
 
 async def get_dish_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
-        dish_id: UUID,
+        menu_id: str,
+        submenu_id: str,
+        dish_id: str,
         db: Session
 ):
     # checks that such menu exist
@@ -190,9 +189,9 @@ async def get_dish_by_ids(
 
 
 async def update_dish_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
-        dish_id: UUID,
+        menu_id: str,
+        submenu_id: str,
+        dish_id: str,
         dish: DishIn,
         db: Session
 ):
@@ -206,9 +205,9 @@ async def update_dish_by_ids(
 
 
 async def delete_dish_by_ids(
-        menu_id: UUID,
-        submenu_id: UUID,
-        dish_id: UUID,
+        menu_id: str,
+        submenu_id: str,
+        dish_id: str,
         db: Session
 ):
     # checks that dish with such dish_id, submenu_id and menu_id exists

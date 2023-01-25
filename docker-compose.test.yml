@@ -1,0 +1,17 @@
+version: "3.8"
+
+networks:
+  restaurant_test:
+      external: true
+
+services:
+  app_tests:
+    platform: linux/amd64
+    container_name: app_tests
+    build:
+      context: .
+      dockerfile: app_tests/Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - restaurant_test
