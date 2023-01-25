@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from uuid import UUID
 
 
 __all__ = ['MenuIn', 'MenuOut', 'SubmenuIn', 'SubmenuOut', 'DishIn', 'DishOut']
@@ -11,7 +10,7 @@ class MenuIn(BaseModel):
 
 
 class MenuOut(BaseModel):
-    id: UUID
+    id: str
     title: str
     description: str
     submenus_count: int = 0
@@ -27,7 +26,7 @@ class SubmenuIn(BaseModel):
 
 
 class SubmenuOut(BaseModel):
-    id: UUID
+    id: str
     title: str
     description: str
     dishes_count: int = 0
@@ -43,7 +42,7 @@ class DishIn(BaseModel):
 
 
 class DishOut(BaseModel):
-    id: UUID
+    id: str
     title: str
     description: str
     price: str

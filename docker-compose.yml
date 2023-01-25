@@ -14,9 +14,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=${PGDATA}
     ports:
-      - "5432:5432"
-    networks:
-      - restaurant
+      - "${DB_PORT}:${DB_PORT}"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -29,16 +27,19 @@ services:
         limits:
           cpus: '1'
           memory: 1G
+    networks:
+      - restaurant
+    command: -p 5432
   app:
     platform: linux/amd64
     container_name: app
-    networks:
-      - restaurant
     build:
       context: .
       dockerfile: app/Dockerfile
     ports:
-      - "8000:8000"
+      - "8080:8080"
+    networks:
+      - restaurant
     depends_on:
       - postgres
 

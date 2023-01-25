@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app_tests:
+    platform: linux/amd64
+    container_name: app_tests
+    build:
+      context: .
+      dockerfile: app_tests/Dockerfile
+    ports:
+      - "8000:8000"

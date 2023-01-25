@@ -17,8 +17,8 @@ class PostgresSettings(BaseSettings):
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
-    DB_PORT: str = '5432'
-    DB_HOST: str = 'localhost'
+    DB_PORT: str
+    DB_HOST: str
     POSTGRES_DB: str
     PGDATA: str
     DATABASE_URL: str

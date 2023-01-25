@@ -8,7 +8,6 @@
 2) Create and activate your own virtual environment
 ```commandline
 python -m venv create venv
-
 ```
 3) Run:
 ```
